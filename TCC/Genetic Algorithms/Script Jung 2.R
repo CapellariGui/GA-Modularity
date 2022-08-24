@@ -1,6 +1,6 @@
 ##### setup  ######
 {
-setwd("C:/Users/capel/Dropbox/TCC/Genetic Algorithms")
+#setwd("C:/Users/capel/Dropbox/TCC/Genetic Algorithms")
 library("readxl")
 library("dplyr")
 library("GA")
@@ -143,7 +143,7 @@ M3 <- 0.9375
 MI <- (M1 * (1/3)) + (M2 * (1/3)) + (M3 * (1/3))
 
 
-#Penalidades (sum(x!=0) != (nm-1) || 
+#### PENALIZAÇÃO (sum(x!=0) != (nm-1) || ####
 offset <- 1.5
 
 MI <- ifelse(x[ncol(mt)] != 0 || sum(x!=0)+1 != nm || M1 <= 0 || M2 <= 0 || M3 <= 0 || M1 > 1 ||  M2 > 1 || M3 > 1 , MI <- 0, MI)
@@ -167,173 +167,20 @@ mat
 (x[ncol(mt)-(i)]+1):(x[ncol(mt)-(j)]) 
 
 #### Genoud ####
-#GA <- genoud(MI, nvars = ncol(mt), max=TRUE, Domains = mat, data.type.int = TRUE, pop.size = 100, wait.generations = 100 )
-GA <- ga(type = "binary", fitness = MI, nBits = ncol(mt), upper = max, lower = 0)
+GA <- genoud(MI, nvars = ncol(mt), max=TRUE, Domains = mat, data.type.int = TRUE, pop.size = 100, wait.generations = 100 )
 
-plot(GA)
-summary(GA)
-x <- GA@solution
-
-#
 GA
 GA$value
 GA$par
 x <- GA$par
 
-MI(x)
-Y
-x[ncol(mt)] != 0
+#### GA ####
 
 
-rm(nm)
+#GA <- ga(type = "binary", fitness = MI, nBits = ncol(mt), upper = max, lower = 0)
 
-sum(x!=0)+1
+#plot(GA)
+#summary(GA)
+#x <- GA@solution
 
-?ga
-########## BC > Número de conexões entre os módulos i-ésimo e j-ésimo #####
-i <- 1
-j <- i + 1
-mt[(x[length(x)-(i-1)]+1):x[length(x)-(j-1)],(x[length(x)-(j-1)]+1):ncol(mt)]
-mt[(x[length(x)-(j-1)]+1):ncol(mt),(x[length(x)-(i-1)]+1):x[length(x)-(j-1)]]
-
-
-
-for (i in 1:(nm-1)) {
-  j <- i+1
-  BC <- function(i,j) {
-    sum((mt[(x[length(x)-(j-1)]+1):ncol(mt),(x[length(x)-(i-1)]+1):x[length(x)-(j-1)]])!=0) +  
-      sum((mt[(x[length(x)-(i-1)]+1):x[length(x)-(j-1)],(x[length(x)-(j-1)]+1):ncol(mt)])!=0)  
-  }
-  print(BC)    
-}
-
-BC <- 0
-for (i in 1:(nm-1)) {
-  j <- i+1
-  BC <- BC + {
-    sum((mt[(x[length(x)-(j-1)]+1):ncol(mt),(x[length(x)-(i-1)]+1):x[length(x)-(j-1)]])!=0) +  
-      sum((mt[(x[length(x)-(i-1)]+1):x[length(x)-(j-1)],(x[length(x)-(j-1)]+1):ncol(mt)])!=0)  
-  }
-  
-  print(BC)  
-}
-
-
-########## WC > Número de conexões dentro do i-ésimo módulo ##########
-
-
-{
-  #WC <- 0
-  #for (i in 1:(nm-1)){
-  #  j <- i+1
-  #  WC <- WC + {
-  #    sum((mt[(x[length(x)-(i-1)]+1):(x[length(x)-(j-1)]) , (x[length(x)-(i-1)]+1): (x[length(x)-(j-1)])])!=0)
-  #  }
-  #print(WC)
-  #  }
-  
-  #i <- 7
-  #j <- i + 1 
-  #(mt[(x[length(x)-(i-1)]+1):nc , (x[length(x)-(i-1)]+1):nc])
-  
-  #(x[length(x)-(i-1)]+1)
-  #(x[length(x)-(j-1)])
-  #nc
-}
-
-WC <- 0
-for (i in 1:(nm)){
-  j <- i+1
-  if (i == nm){
-    WC <- WC + sum(mt[(x[length(x)-(i-1)]+1):nc , (x[length(x)-(i-1)]+1):nc])
-    print(WC)
-    break
-  } else {
-    WC <- WC + {
-      sum((mt[(x[length(x)-(i-1)]+1):(x[length(x)-(j-1)]) , (x[length(x)-(i-1)]+1): (x[length(x)-(j-1)])])!=0)
-    }
-  }
-  print(WC)
-}
-
-########## BS > Soma da intereção dos valores entre os módulos i-ésimo e j-ésimo ##########
-BS <- 0 
-for (i in 1:(nm-1)) {
-  j <- i+1
-  BS <- BS + {
-    sum(mt[(x[length(x)-(j-1)]+1):ncol(mt),(x[length(x)-(i-1)]+1):x[length(x)-(j-1)]]) +  
-      sum(mt[(x[length(x)-(i-1)]+1):x[length(x)-(j-1)],(x[length(x)-(j-1)]+1):ncol(mt)])  
-  }
-  
-  print(BS)  
-}
-
-########## WS > Soma da intereção dos valores dentro do i-ésimo módulo ##########
-WS <- 0
-for (i in 1:(nm)){
-  j <- i+1
-  if (i == nm){
-    WS <- WS + sum(mt[(x[length(x)-(i-1)]+1):nc , (x[length(x)-(i-1)]+1): nc])
-    print(WS)
-    break
-  } else {
-  WS <- WS + {
-    sum(mt[(x[length(x)-(i-1)]+1):(x[length(x)-(j-1)]) , (x[length(x)-(i-1)]+1): (x[length(x)-(j-1)])])
-  }
-  }
-  print(WS)
-}
-
-
-
-########## q > Índice do último componente do i-ésimo módulo ##########
-
-i <- 1
-j <- i + 1
-
-x[length(x)-(j-1)]
-
-######### p > Índice do primeiro componente do i-ésimo módulo #########
-
-(x[length(x)-(i-1)]+1)
-
-##### R Rij is the value of the ith row and jth column element in DSM #####
-
-Rmax <- max(mt)
-
-SR1 <- SR1 + ((1-(j-i)/(nc-1))*(Rij + Rji)/Rmax)
-SR2 <- SR2 + ((Rij + Rji)/Rmax)
-
-M3 <- SR1/SR2
-
-
-
-########## Acompanhamento ##########
-
-# Calculos dos W não estão pegando último módulo - Solucionado
-# Lembrar de que na fórmula há WSi, WSj, WCi e WCj - Solucionado 
-# Módificar gene do primeiro módulo no vetor cromossomo de 0 para 1  - Solucionado - Acredito que não haverá necessidade
-# Estudar como idenificar o valor de Rij 
-
-fn <- function (x,y) {
-  q <- x+y
-  
-  return(q)
-}
-
-fn(1,2)
-
-GA <- genoud(fn, nvars = 1, max=TRUE, Domains = 5, data.type.int = TRUE, pop.size = 100 )
-
-
-
-k <- 1
-for (f in 1:5){
-  for (g in f+1:6){
-    k <- k+f+g
-    print (k, f, g)
-    
-    
-  }
-} 
 
