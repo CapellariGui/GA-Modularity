@@ -1,6 +1,6 @@
 ##### setup  ######
 {
-setwd("C:/Users/capel/Dropbox/TCC/Genetic Algorithms")
+#setwd("C:/Users/capel/Dropbox/TCC/Genetic Algorithms")
 library("readxl")
 library("dplyr")
 library("GA")
@@ -71,11 +71,13 @@ nm <- 7
 nc <- ncol(mt)
 BC <- 0
 WC <- 0
+WCi1 <- 0
 SWC <- WC #soma do WC
-WCj <- 0
+WCj1 <- 0
 BS <- 0
 WS <- 0 
-WSj <- 0 
+WSi1 <- 0
+WSj1 <- 0 
 ST <- 0
 q <- 0 
 p <- 0 
@@ -83,105 +85,81 @@ qp <- 0
 SR1 <- 0
 SR2 <- 0
   
-for (i in 1:(nm)){
+
+
+##### MI1 #####
+
+for ( i in 1:(nm-1)){
   j <- i+1
   
-  if (i == (nm-1)){
-    WCj <- sum((mt[(x[ncol(mt)-(i)]+1):nc , (x[ncol(mt)-(i)]+1):nc])!=0)
-    WSj <- sum(mt[(x[ncol(mt)-(i)]+1):nc , (x[ncol(mt)-(i)]+1):nc])
-   
-    ST <- ST + ((BC/WC)+(BC/WCj)+(BS/WS)+(BS/WSj))
-    SWC <- SWC + WC
-    q <- x[ncol(mt)-(j-1)]
-    p <- (x[ncol(mt)-(i-1)]+1)
-    qp <- qp + (q-p+1)^2
-    
-    #print(WCj)
-    #print(ST)
-  } else {
+  WCi1 <- {
+    sum((mt[(x[ncol(mt)-(i-1)]+1):(x[ncol(mt)-(j-1)]) , (x[ncol(mt)-(i-1)]+1): (x[ncol(mt)-(j-1)])])!=0)
+  }
+  BC <- {
+    sum((mt[(x[ncol(mt)-(j-1)]+1):ncol(mt),(x[ncol(mt)-(i-1)]+1):x[ncol(mt)-(j-1)]])!=0) +  
+      sum((mt[(x[ncol(mt)-(i-1)]+1):x[ncol(mt)-(j-1)],(x[ncol(mt)-(j-1)]+1):ncol(mt)])!=0)  
+  }
+  WCj1 <- {
+    sum((mt[(x[ncol(mt)-(i)]+1):(x[ncol(mt)-(j)]) , (x[ncol(mt)-(i)]+1):(x[ncol(mt)-(j)])])!=0)
+  }
+  WSi1 <- {
+    sum(mt[(x[ncol(mt)-(i-1)]+1):(x[ncol(mt)-(j-1)]) , (x[ncol(mt)-(i-1)]+1): (x[ncol(mt)-(j-1)])])
+  }
+  BS <- {
+    sum(mt[(x[ncol(mt)-(j-1)]+1):ncol(mt),(x[ncol(mt)-(i-1)]+1):x[ncol(mt)-(j-1)]]) +  
+      sum(mt[(x[ncol(mt)-(i-1)]+1):x[ncol(mt)-(j-1)],(x[ncol(mt)-(j-1)]+1):ncol(mt)])  
+  }
+  WSj1 <- {
+    sum(mt[(x[ncol(mt)-(i)]+1):(x[ncol(mt)-(j)]) , (x[ncol(mt)-(i)]+1):(x[ncol(mt)-(j)])])
+  }
+
+  ST <- ST + ((BC/WCi1)+(BC/WCj1)+(BS/WSi1)+(BS/WSj1))
+}
+
+MI1 <- 1-(ST/(2*nm*(nm-1)))
+
+##### MI2 #####
+for (i in 1:nm){
+  j <- i+1
   
   if (i == nm){
     WC <- sum((mt[(x[ncol(mt)-(i-1)]+1):nc , (x[ncol(mt)-(i-1)]+1):nc])!=0)
-    WS <- sum(mt[(x[ncol(mt)-(i-1)]+1):nc , (x[ncol(mt)-(i-1)]+1):nc])
-   
-    ST <- ST + ((BC/WC)+(BC/WCj)+(BS/WS)+(BS/WSj))
     SWC <- SWC + WC
     q <- nc
     p <- (x[ncol(mt)-(i-1)]+1)
     qp <- qp + (q-p+1)^2
-    
-    
-    #print(ST)
+
     break
-  } else {
-    WC <- {
-      sum((mt[(x[ncol(mt)-(i-1)]+1):(x[ncol(mt)-(j-1)]) , (x[ncol(mt)-(i-1)]+1): (x[ncol(mt)-(j-1)])])!=0)
-    }
-    BC <- {
-      sum((mt[(x[ncol(mt)-(j-1)]+1):ncol(mt),(x[ncol(mt)-(i-1)]+1):x[ncol(mt)-(j-1)]])!=0) +  
-        sum((mt[(x[ncol(mt)-(i-1)]+1):x[ncol(mt)-(j-1)],(x[ncol(mt)-(j-1)]+1):ncol(mt)])!=0)  
-    }
-    WCj <- {
-      sum((mt[(x[ncol(mt)-(i)]+1):(x[ncol(mt)-(j)]) , (x[ncol(mt)-(i)]+1):(x[ncol(mt)-(j)])])!=0)
-    }
-    WS <- {
-      sum(mt[(x[ncol(mt)-(i-1)]+1):(x[ncol(mt)-(j-1)]) , (x[ncol(mt)-(i-1)]+1): (x[ncol(mt)-(j-1)])])
-    }
-    BS <- {
-      sum(mt[(x[ncol(mt)-(j-1)]+1):ncol(mt),(x[ncol(mt)-(i-1)]+1):x[ncol(mt)-(j-1)]]) +  
-        sum(mt[(x[ncol(mt)-(i-1)]+1):x[ncol(mt)-(j-1)],(x[ncol(mt)-(j-1)]+1):ncol(mt)])  
-    }
-    WSj <- {
-      sum(mt[(x[ncol(mt)-(i)]+1):(x[ncol(mt)-(j)]) , (x[ncol(mt)-(i)]+1):(x[ncol(mt)-(j)])])
-    }
-    q <- x[ncol(mt)-(j-1)]
-    p <- (x[ncol(mt)-(i-1)]+1)
-    qp <- qp + (q-p+1)^2
-    
+  } else{  
+  WC <- {
+    sum((mt[(x[ncol(mt)-(i-1)]+1):(x[ncol(mt)-(j-1)]) , (x[ncol(mt)-(i-1)]+1): (x[ncol(mt)-(j-1)])])!=0)
+}
+  q <- x[ncol(mt)-(j-1)]
+  p <- (x[ncol(mt)-(i-1)]+1)
+  qp <- qp + (q-p+1)^2
+  SWC <- SWC + WC
+
   }
-
-ST <- ST + ((BC/WC)+(BC/WCj)+(BS/WS)+(BS/WSj))
-SWC <- SWC + WC
-
-
-}
 }
 
-#Cálculo individual dos índices MI1, MI2 e MI3
+MI2 <- (SWC + nc)/qp
 
-M1 <- 1-(ST/(2*nm*(nm-1)))
-M2 <- (SWC + nc)/qp
-#M3 
+
+##### MI3 #####
 for (i in 1:(ncol(mt)-1)){
   j <- i+1
   
   SR1 <- SR1 + ((1-(j-i)/(ncol(mt)-1))*(mt[i,j] +mt[j,i])/max(mt))
   SR2 <- SR2 + ((mt[i,j] +mt[j,i])/max(mt))
-  
-  M3 <- SR1/SR2
-  #return(M3)
 }
+  MI3 <- SR1/SR2
 
+##### Índice de modularidade MI #####
+  
+MI <- (MI1 * (1/3)) + (MI2 * (1/3)) + (MI3 * (1/3))  
 
+  return (MI)
 
-#Índice de modularidade MI
-#MI <- ((abs(M1)) * (1/3)) + ((abs(M2)) * (1/3)) + ((abs(M3)) * (1/3))
-MI <- (M1 * (1/3)) + (M2 * (1/3)) + (M3 * (1/3))
-
-
-#Penalidades (sum(x!=0) != (nm-1) || 
-#offset <- 1.5
-
-#MI <- ifelse(x[ncol(mt)] != 0 || sum(x!=0)+1 != nm || M1 <= 0 || M2 <= 0 || M3 <= 0 || M1 > 1 ||  M2 > 1 || M3 > 1 , MI <- 0, MI)
-#MI <- ifelse(M1 <= 0 || M2 <= 0 || M3 <= 0 || M1 > 1 ||  M2 > 1 || M3 > 1 , MI <- 0, MI)
-#
-
-#Valor de retorno
-print(M1)
-print(M2)
-print(M3)
-
-return(MI)
 }
 
 MI(vga)
