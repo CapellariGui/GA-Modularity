@@ -19,7 +19,7 @@ ncol(mt)
 #Definir cromossomo
 
 x <- c(0,0,0,0,0,0,0,0,0,0,16,15,14,9,5,3,0) 
-#x <- c(0,0,0,0,0,0,0,0,0,0,0,0,0,9,5,3,0) 
+ 
 #length(x)
 #rm(x)
 ##### x teste com resultado do Genoud e outras possibilidades #####
