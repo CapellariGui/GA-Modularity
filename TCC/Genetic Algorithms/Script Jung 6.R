@@ -84,8 +84,6 @@ p <- 0
 qp <- 0 
 SR1 <- 0
 SR2 <- 0
-  
-
 
 ##### MI1 #####
 
@@ -164,30 +162,9 @@ MI <- (MI1 * (1/3)) + (MI2 * (1/3)) + (MI3 * (1/3))
 
 MI(vga)
 
-##### Matriz de limites para genoud #####
-mat <- matrix(rep(c(0,1),ncol(mt)),(ncol(mt)^2),2,byrow = TRUE)
-mat
-(x[ncol(mt)-(i)]+1):(x[ncol(mt)-(j)]) 
-
-#### Genoud ####
-#GA <- genoud(MI, nvars = (ncol(mt)^2), max=TRUE, Domains = mat, data.type.int = TRUE, pop.size = 100, wait.generations = 100 )
-GA
-GA$value
-GA$par
-x <- GA$par
-
 ##### GA #####
 GA <- ga(type = "binary", fitness = MI, nBits = (ncol(mt)^2), upper = max)
 
 plot(GA)
 summary(GA)
 x <- GA@solution
-
-i <-7 
-j <- i + 1
-
-
-
-mt[(x[ncol(mt)-(i-1)]+1):(x[ncol(mt)-(j-1)]) , (x[ncol(mt)-(i-1)]+1): (x[ncol(mt)-(j-1)])]
-
-
